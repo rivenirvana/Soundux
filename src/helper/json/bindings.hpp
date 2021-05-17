@@ -67,6 +67,19 @@ namespace nlohmann
             obj.readInMs.store(j.at("readInMs").get<std::uint64_t>());
         }
     };
+    template <typename T> struct adl_serializer<Soundux::Objects::HotkeySetting<T>>
+    {
+        static void to_json(json &j, const Soundux::Objects::HotkeySetting<T> &obj)
+        {
+            j = {{"value", obj.value}, {"state", obj.state}, {"hotKey", obj.hotKey}};
+        }
+        static void from_json(const json &j, Soundux::Objects::HotkeySetting<T> &obj)
+        {
+            j.at("hotKey").get_to(obj.hotKey);
+            j.at("value").get_to(obj.value);
+            j.at("state").get_to(obj.state);
+        }
+    };
     template <> struct adl_serializer<Soundux::Objects::Settings>
     {
         static void to_json(json &j, const Soundux::Objects::Settings &obj)

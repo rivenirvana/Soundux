@@ -142,15 +142,15 @@ namespace Soundux::Objects
         auto sound = Globals::gData.getSound(id);
         if (sound)
         {
-            if (!Globals::gSettings.allowOverlapping)
+            if (!Globals::gSettings.allowOverlapping && Globals::gSettings.allowOverlapping.enabled())
             {
                 stopSounds(true);
             }
-            if (Globals::gSettings.muteDuringPlayback)
+            if (Globals::gSettings.muteDuringPlayback && Globals::gSettings.muteDuringPlayback.enabled())
             {
                 Globals::gAudioBackend->muteInput(true);
             }
-            if (!Globals::gSettings.pushToTalkKeys.empty())
+            if (Globals::gSettings.pushToTalkKeys.enabled() && !Globals::gSettings.pushToTalkKeys.get().empty())
             {
                 Globals::gHotKeys.pressKeys(Globals::gSettings.pushToTalkKeys);
             }
@@ -485,7 +485,8 @@ namespace Soundux::Objects
         }
         if (!Globals::gAudio.getPlayingSounds().empty())
         {
-            if (settings.muteDuringPlayback && !Globals::gSettings.muteDuringPlayback)
+            if (settings.muteDuringPlayback && !Globals::gSettings.muteDuringPlayback &&
+                Globals::gSettings.muteDuringPlayback.enabled())
             {
                 if (!Globals::gAudioBackend->muteInput(true))
                 {
@@ -724,13 +725,13 @@ namespace Soundux::Objects
     }
     void Window::onAllSoundsFinished()
     {
-        if (!Globals::gSettings.pushToTalkKeys.empty())
+        if (Globals::gSettings.pushToTalkKeys.enabled() && !Globals::gSettings.pushToTalkKeys.get().empty())
         {
             Globals::gHotKeys.releaseKeys(Globals::gSettings.pushToTalkKeys);
         }
 
 #if defined(__linux__)
-        if (Globals::gSettings.muteDuringPlayback)
+        if (Globals::gSettings.muteDuringPlayback && Globals::gSettings.muteDuringPlayback.enabled())
         {
             Globals::gAudioBackend->muteInput(false);
         }
@@ -746,7 +747,7 @@ namespace Soundux::Objects
     }
     void Window::onSoundPlayed([[maybe_unused]] const PlayingSound &sound)
     {
-        if (!Globals::gSettings.pushToTalkKeys.empty())
+        if (Globals::gSettings.pushToTalkKeys.enabled() && !Globals::gSettings.pushToTalkKeys.get().empty())
         {
             Globals::gHotKeys.pressKeys(Globals::gSettings.pushToTalkKeys);
         }

@@ -87,6 +87,44 @@ namespace Soundux
             std::vector<Sound> sounds;
         };
 
+        class SettingBase
+        {
+          protected:
+            bool state;
+            std::vector<int> hotKey;
+
+          public:
+            void toggle();
+            bool enabled() const;
+            const std::vector<int> &hotkey() const;
+
+            virtual ~SettingBase() = default;
+            static inline std::vector<SettingBase *> settings;
+        };
+        template <typename T> class HotkeySetting : public SettingBase
+        {
+            template <typename, typename> friend struct nlohmann::adl_serializer;
+
+            T value;
+
+          public:
+            T &get()
+            {
+                return value;
+            }
+            operator T &()
+            {
+                return value;
+            }
+            operator const T &() const
+            {
+                return value;
+            }
+
+            HotkeySetting() = default;
+            HotkeySetting(const T &value) : value(value) {}
+        };
+
         struct Settings
         {
             SortMode sortMode = SortMode::ModifiedDate_Descending;
@@ -94,7 +132,11 @@ namespace Soundux
             ViewMode viewMode = ViewMode::List;
             Theme theme = Theme::System;
 
-            std::vector<int> pushToTalkKeys;
+            HotkeySetting<std::vector<int>> pushToTalkKeys;
+            HotkeySetting<bool> muteDuringPlayback = false;
+            HotkeySetting<bool> allowOverlapping = true;
+            HotkeySetting<bool> tabHotkeysOnly = false;
+
             std::vector<int> stopHotkey;
 
             std::uint32_t selectedTab = 0;
@@ -105,11 +147,10 @@ namespace Soundux
             bool syncVolumes = false;
 
             bool useAsDefaultDevice = false;
-            bool muteDuringPlayback = false;
-            bool allowOverlapping = true;
             bool minimizeToTray = false;
-            bool tabHotkeysOnly = false;
             bool deleteToTrash = true;
+
+            void setup();
         };
         class Data
         {

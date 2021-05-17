@@ -59,6 +59,22 @@ namespace Soundux
             }
             return false;
         }
+        bool isShuffledMatch(const std::vector<int> &pressedKeys, const std::vector<int> &keys)
+        {
+            if (pressedKeys.size() == keys.size())
+            {
+                bool allMatched = true;
+                for (const auto &key : keys)
+                {
+                    if (std::find(pressedKeys.begin(), pressedKeys.end(), key) == pressedKeys.end())
+                    {
+                        allMatched = false;
+                    }
+                }
+                return allMatched;
+            }
+            return false;
+        }
         template <typename T> std::optional<Sound> getBestMatch(const T &list, const std::vector<int> &pressedKeys)
         {
             std::optional<Sound> rtn;
@@ -80,6 +96,11 @@ namespace Soundux
                     continue;
 
                 if (sound.hotkeys == pressedKeys)
+                {
+                    rtn = sound;
+                    break;
+                }
+                if (isShuffledMatch(sound.hotkeys, pressedKeys))
                 {
                     rtn = sound;
                     break;
@@ -117,6 +138,15 @@ namespace Soundux
                 return;
             }
 
+            for (const auto &setting : SettingBase::settings)
+            {
+                if (pressedKeys == setting->hotkey() || isShuffledMatch(pressedKeys, setting->hotkey()))
+                {
+                    setting->toggle();
+                    return;
+                }
+            }
+
             if (!Globals::gSettings.stopHotkey.empty() && (pressedKeys == Globals::gSettings.stopHotkey ||
                                                            isCloseMatch(pressedKeys, Globals::gSettings.stopHotkey)))
             {
@@ -126,7 +156,7 @@ namespace Soundux
 
             std::optional<Sound> bestMatch;
 
-            if (Globals::gSettings.tabHotkeysOnly)
+            if (Globals::gSettings.tabHotkeysOnly && Globals::gSettings.tabHotkeysOnly.enabled())
             {
                 if (Globals::gData.isOnFavorites)
                 {

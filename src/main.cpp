@@ -48,7 +48,9 @@ int main()
 
     Soundux::Globals::gConfig.load();
     Soundux::Globals::gData.set(Soundux::Globals::gConfig.data);
+
     Soundux::Globals::gSettings = Soundux::Globals::gConfig.settings;
+    Soundux::Globals::gSettings.setup();
 
 #if defined(__linux__)
     Soundux::Globals::gIcons.setup();

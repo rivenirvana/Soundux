@@ -210,4 +210,25 @@ namespace Soundux::Objects
 
         return rtn;
     }
+
+    void SettingBase::toggle()
+    {
+        state = !state;
+    }
+    bool SettingBase::enabled() const
+    {
+        return state;
+    }
+    const std::vector<int> &SettingBase::hotkey() const
+    {
+        return hotKey;
+    }
+
+    void Settings::setup()
+    {
+        SettingBase::settings.emplace_back(&pushToTalkKeys);
+        SettingBase::settings.emplace_back(&tabHotkeysOnly);
+        SettingBase::settings.emplace_back(&allowOverlapping);
+        SettingBase::settings.emplace_back(&muteDuringPlayback);
+    }
 } // namespace Soundux::Objects
