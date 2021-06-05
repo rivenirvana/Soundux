@@ -32,7 +32,7 @@ Recommends:     ffmpeg youtube-dl
 A universal soundboard that uses PulseAudio modules or PipeWire linking
 
 %prep
-%setup -n %{name}-%{version}
+%setup -n Soundux
 
 %build
 mkdir -p build
