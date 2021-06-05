@@ -1,5 +1,4 @@
 %global debug_package   %{nil}
-%global repo_url        https://github.com/Soundux/Soundux
 
 Name:           soundux
 Version:        0.2.7
@@ -8,7 +7,7 @@ Summary:        A cross-platform soundboard
 
 License:        GPLv3+
 URL:            https://soundux.rocks
-Source0:        %{repo_url}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/Soundux/Soundux/releases/download/%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  cmake >= 3.1
 BuildRequires:  clang llvm ninja-build
@@ -33,7 +32,7 @@ Recommends:     ffmpeg youtube-dl
 A universal soundboard that uses PulseAudio modules or PipeWire linking
 
 %prep
-%autosetup -n Soundux
+%setup -n %{name}-%{version}
 
 %build
 mkdir -p build
